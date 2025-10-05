@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main">
+    <div class="center">
+        <p>This is your wallets private key. Do not share it with anyone!</p>
+        <p> {{pk}} </p>
+        <a href="/settings" class="btn">Back</a>
+    </div>
+</div>
+{% endblock %}

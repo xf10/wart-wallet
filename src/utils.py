@@ -6,7 +6,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from ecdsa import SigningKey, SECP256k1
-from ecdsa.util import randrange_from_seed__trytryagain
+from ecdsa.util import randrange_from_seed__trytryagain, randrange
 from Crypto.Hash import RIPEMD160, SHA256
 from pycoin.ecdsa.secp256k1 import secp256k1_generator
 from hashlib import sha256
@@ -50,6 +50,7 @@ def decrypt_pk(pk_enc, pw, salt):
 def wallet_from_seed(seed):
     # generate private key
     secexp = randrange_from_seed__trytryagain(seed, SECP256k1.order)
+    # secexp = randrange(seed, SECP256k1.order)
     pk = SigningKey.from_secret_exponent(secexp, curve=SECP256k1)
 
     return address_from_pk(pk), pk

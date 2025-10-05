@@ -1,1 +1,2 @@
-- fix 
+- added ability to export private key
+- allow peer url to have trailing slash

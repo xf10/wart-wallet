@@ -1,7 +1,10 @@
+import binascii
+import hashlib
 import threading
 import sys
 import webview
 import re
+from ecdsa import ecdsa, util
 from engineio.async_drivers import gevent
 from flask import Flask, render_template, request, flash, redirect, url_for, make_response
 from flask_apscheduler import APScheduler
@@ -137,8 +140,10 @@ def restore_mnemo(pw):
     if request.method == "POST":
         words = request.form.get("mnemo")
         seed = mnemo.to_seed(words, passphrase="")
+        # print(f"seed: {binascii.hexlify(seed)}")
         address, privkey = wallet_from_seed(seed)
-
+        # print(f"address: {address}")
+        # print(f"pk: {privkey.to_string().hex()}")
         encrypted_pk, salt = encrypt_pk(privkey.to_string().hex(), pw)
 
         db.insert_wallet(address, encrypted_pk, salt)
@@ -320,6 +325,8 @@ def settings():
 
     if request.method == "POST":
         PEER = request.form.get("peer")
+        if PEER[-1] == "/":
+            PEER = PEER[:-1]
         db.update_peer(PEER)
         flash("Settings saved!")
         return render_template("settings.html", peer=PEER)
@@ -346,6 +353,18 @@ def delete_wallet(address):
 
     db.delete_wallet(address)
     return redirect(url_for("login"))
+
+
+@app.route("/export-pk", methods=["GET"])
+def export_pk():
+
+    token = request.cookies.get('auth')
+    if not compare_digest(str(token), webview.token):
+        return ""
+    pk = privkey.to_string().hex()
+
+    return render_template("export-pk.html", pk=pk)
+
 
 
 # exit application
