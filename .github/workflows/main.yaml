@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build_release:
@@ -20,7 +21,7 @@ jobs:
         with:
           path: src
       - name: bundle windows
-        uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
+        uses: JackMcKew/pyinstaller-action-windows@main
         with:
           path: src
       - name: Get Previous tag
